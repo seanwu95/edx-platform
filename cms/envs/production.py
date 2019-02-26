@@ -6,8 +6,9 @@ This is the default template for our main set of AWS servers.
 # want to import all variables from base settings files
 # pylint: disable=wildcard-import, unused-wildcard-import
 
-import json
+import codecs
 import os
+import yaml
 
 from path import Path as path
 from xmodule.modulestore.modulestore_settings import convert_module_store_setting_if_needed
@@ -16,6 +17,28 @@ from .common import *
 
 from openedx.core.lib.derived import derive_settings  # pylint: disable=wrong-import-order
 from openedx.core.lib.logsettings import get_logger_config  # pylint: disable=wrong-import-order
+from django.core.exceptions import ImproperlyConfigured  # pylint: disable=wrong-import-order
+
+
+def get_env_setting(setting):
+    """ Get the environment setting or return exception """
+    try:
+        return os.environ[setting]
+    except KeyError:
+        error_msg = u"Set the %s env variable" % setting
+        raise ImproperlyConfigured(error_msg)
+
+# A file path to a YAML file from which to load all the configuration for the edx platform
+CONFIG_FILE = get_env_setting('STUDIO_CFG')
+
+with codecs.open(CONFIG_FILE, encoding='utf-8') as f:
+    __config__ = yaml.safe_load(f)
+
+    # ENV_TOKENS and AUTH_TOKENS are included for reverse compatability.
+    # These two lines can be removed once aws.py is removed.
+    ENV_TOKENS = __config__
+    AUTH_TOKENS = __config__
+
 
 # SERVICE_VARIANT specifies name of the variant used, which decides what JSON
 # configuration files are read during startup.
@@ -81,11 +104,6 @@ CELERY_QUEUES = {
 }
 
 CELERY_ROUTES = "{}celery.Router".format(QUEUE_VARIANT)
-
-############# NON-SECURE ENV CONFIG ##############################
-# Things like server locations, ports, etc.
-with open(CONFIG_ROOT / CONFIG_PREFIX + "env.json") as env_file:
-    ENV_TOKENS = json.load(env_file)
 
 # Do NOT calculate this dynamically at startup with git because it's *slow*.
 EDX_PLATFORM_REVISION = ENV_TOKENS.get('EDX_PLATFORM_REVISION', EDX_PLATFORM_REVISION)
@@ -304,11 +322,6 @@ FILE_UPLOAD_STORAGE_PREFIX = ENV_TOKENS.get('FILE_UPLOAD_STORAGE_PREFIX', FILE_U
 # Zendesk
 ZENDESK_URL = ENV_TOKENS.get('ZENDESK_URL', ZENDESK_URL)
 ZENDESK_CUSTOM_FIELDS = ENV_TOKENS.get('ZENDESK_CUSTOM_FIELDS', ZENDESK_CUSTOM_FIELDS)
-
-################ SECURE AUTH ITEMS ###############################
-# Secret things: passwords, access keys, etc.
-with open(CONFIG_ROOT / CONFIG_PREFIX + "auth.json") as auth_file:
-    AUTH_TOKENS = json.load(auth_file)
 
 ############### XBlock filesystem field config ##########
 if 'DJFS' in AUTH_TOKENS and AUTH_TOKENS['DJFS'] is not None:
@@ -597,8 +610,13 @@ COURSE_ENROLLMENT_MODES = ENV_TOKENS.get('COURSE_ENROLLMENT_MODES', COURSE_ENROL
 ####################### Plugin Settings ##########################
 
 # This is at the bottom because it is going to load more settings after base settings are loaded
-from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants  # pylint: disable=wrong-import-order, wrong-import-position
-plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.CMS, plugin_constants.SettingsType.AWS)
+from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants  # pylint: disable=wrong-import-order, wrong-import-position, ungrouped-imports
+
+plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.CMS,
+                            plugin_constants.SettingsType.DEPRECATED_AWS)
+
+# We continue to load production.py over aws.py
+plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.CMS, plugin_constants.SettingsType.PRODUCTION)
 
 ########################## Derive Any Derived Settings  #######################
 
