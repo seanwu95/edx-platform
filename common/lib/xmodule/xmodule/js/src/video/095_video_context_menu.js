@@ -628,7 +628,7 @@ function(Component) {
                 }, {
                     label: i18n.Speed,
                     items: _.map(state.speeds, function(speed) {
-                        var isSelected = speed === state.speed;
+                        var isSelected = parseFloat(speed) === state.speed;
                         return {label: speed + 'x', callback: speedCallback, speed: speed, isSelected: isSelected};
                     }),
                     initialize: function(menuitem) {
