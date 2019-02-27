@@ -23,7 +23,7 @@ class BookmarksConfig(AppConfig):
         },
         PluginSettings.CONFIG: {
             ProjectType.LMS: {
-                SettingsType.DEPRECATED_AWS: {PluginSettings.RELATIVE_PATH: u'settings.aws'},
+                SettingsType.AWS: {PluginSettings.RELATIVE_PATH: u'settings.aws'},
                 SettingsType.COMMON: {PluginSettings.RELATIVE_PATH: u'settings.common'},
             }
         }

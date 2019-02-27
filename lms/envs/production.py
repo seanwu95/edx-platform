@@ -1121,7 +1121,7 @@ PROFILE_MICROFRONTEND_URL = ENV_TOKENS.get('PROFILE_MICROFRONTEND_URL', PROFILE_
 # This is at the bottom because it is going to load more settings after base settings are loaded
 from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants  # pylint: disable=wrong-import-order, wrong-import-position, ungrouped-imports
 plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.LMS,
-                            plugin_constants.SettingsType.DEPRECATED_AWS)
+                            plugin_constants.SettingsType.AWS)
 
 # Load production.py in plugins
 plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.LMS, plugin_constants.SettingsType.PRODUCTION)
