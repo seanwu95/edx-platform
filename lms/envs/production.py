@@ -27,6 +27,7 @@ import dateutil
 from corsheaders.defaults import default_headers as corsheaders_default_headers
 from path import Path as path
 from xmodule.modulestore.modulestore_settings import convert_module_store_setting_if_needed
+from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants  # pylint: disable=wrong-import-order, wrong-import-position, ungrouped-imports
 
 from .common import *
 from openedx.core.lib.derived import derive_settings  # pylint: disable=wrong-import-order
@@ -1119,7 +1120,7 @@ PROFILE_MICROFRONTEND_URL = ENV_TOKENS.get('PROFILE_MICROFRONTEND_URL', PROFILE_
 ############################### Plugin Settings ###############################
 
 # This is at the bottom because it is going to load more settings after base settings are loaded
-from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants  # pylint: disable=wrong-import-order, wrong-import-position, ungrouped-imports
+
 plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.LMS,
                             plugin_constants.SettingsType.AWS)
 

@@ -12,6 +12,7 @@ import yaml
 
 from path import Path as path
 from xmodule.modulestore.modulestore_settings import convert_module_store_setting_if_needed
+from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants
 
 from .common import *
 
@@ -610,7 +611,6 @@ COURSE_ENROLLMENT_MODES = ENV_TOKENS.get('COURSE_ENROLLMENT_MODES', COURSE_ENROL
 ####################### Plugin Settings ##########################
 
 # This is at the bottom because it is going to load more settings after base settings are loaded
-from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants  # pylint: disable=wrong-import-order, wrong-import-position, ungrouped-imports
 
 plugin_settings.add_plugins(__name__, plugin_constants.ProjectType.CMS,
                             plugin_constants.SettingsType.AWS)
