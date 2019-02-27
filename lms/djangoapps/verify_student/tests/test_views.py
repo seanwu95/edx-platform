@@ -1803,7 +1803,7 @@ class TestPhotoVerificationResultsCallback(ModuleStoreTestCase):
     )
     @patch('lms.djangoapps.verify_student.views.log.error')
     @patch('lms.djangoapps.verify_student.utils.SailthruClient.send')
-    def test_first_time_verification(self, mock_sailthru_send, mock_log_error):
+    def test_first_time_verification(self, mock_sailthru_send, mock_log_error):  # pylint: disable=unused-argument
         """
         Test for verification passed if the learner does not have any previous verification
         """
