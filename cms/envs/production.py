@@ -13,12 +13,12 @@ import yaml
 from path import Path as path
 from xmodule.modulestore.modulestore_settings import convert_module_store_setting_if_needed
 from openedx.core.djangoapps.plugins import plugin_settings, constants as plugin_constants
+from django.core.exceptions import ImproperlyConfigured
 
 from .common import *
 
 from openedx.core.lib.derived import derive_settings  # pylint: disable=wrong-import-order
 from openedx.core.lib.logsettings import get_logger_config  # pylint: disable=wrong-import-order
-from django.core.exceptions import ImproperlyConfigured  # pylint: disable=wrong-import-order
 
 
 def get_env_setting(setting):
