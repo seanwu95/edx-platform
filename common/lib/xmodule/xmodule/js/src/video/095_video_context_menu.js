@@ -217,7 +217,8 @@ function(Component) {
         },
 
         appendContent: function(content) {
-            this.getElement().append(content);
+            var $content = $(content);
+            this.getElement().append($content);
             return this;
         },
 
@@ -247,8 +248,8 @@ function(Component) {
         },
 
         open: function() {
-            var menu = (this.isRendered) ? this.getElement() : this.populateElement();
-            this.container.append(menu);
+            var $menu = (this.isRendered) ? this.getElement() : this.populateElement();
+            this.container.append($menu);
             AbstractItem.prototype.open.call(this);
             this.overlay.show(this.container);
             return this;
@@ -355,7 +356,8 @@ function(Component) {
         },
 
         show: function(container) {
-            $(container).append(this.getElement());
+            var $elem = $(this.getElement());
+            $(container).append($elem);
             this.delegateEvents();
             return this;
         },
@@ -399,21 +401,25 @@ function(Component) {
                 tabindex: -1
             });
 
-            this.label = $('<span />', {
+            var $span_elem = $('<span />', {
                 id: 'submenu-item-label-' + this.id,
                 text: this.options.label
-            }).appendTo($element);
+            });
+            this.label = $span_elem.appendTo($element);
 
-            this.list = $('<ol />', {
+            var $ol_elem = $('<ol />', {
                 class: ['submenu', this.options.prefix + 'submenu'].join(' '),
                 role: 'menu'
-            }).appendTo($element);
+            });
+
+            this.list = $ol_elem.appendTo($element);
 
             return $element;
         },
 
         appendContent: function(content) {
-            this.list.append(content);
+            var $content = $(content);
+            this.list.append($content);
             return this;
         },
 
